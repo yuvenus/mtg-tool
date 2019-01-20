@@ -36,6 +36,12 @@ html, body * {
       background-color: lighten($default, 10%);
     }
   }
+
+  &.disabled {
+    background-color: gray;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 }
 
 .search-container {

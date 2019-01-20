@@ -18,4 +18,14 @@ const backgroundColors = [
   '#808000'
 ];
 
-export { backgroundColors };
+// white blue black red green colorless
+const manaColors = [
+  '#fffbd5',
+  '#aae0fa',
+  '#333333',
+  '#f9aa8f',
+  '#9bd3ae'
+// '#f9f9f9'
+]
+
+export { backgroundColors, manaColors };
