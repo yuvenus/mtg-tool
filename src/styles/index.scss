@@ -58,6 +58,7 @@ html, body * {
     }
 
     .button-container {
+      margin-top: 10px;
       display: flex;
       width: 250px;
       justify-content: space-between;
@@ -71,5 +72,10 @@ html, body * {
 
     .results-display {
       display: flex;
+    }
+
+    .spinner {
+      width: 100px;
+      height: 100px;
     }
 }

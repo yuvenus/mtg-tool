@@ -208,6 +208,7 @@ export default class Search extends React.Component {
 
   clear() {
     this.setState({input: ''});
+    this.hasData = false;
   }
 
   render() {
@@ -224,7 +225,7 @@ export default class Search extends React.Component {
         </div>
 
         {/* won't render properly unless you make sure there's data */}
-        {this.hasData &&
+        {this.hasData && !this.progress &&
           <div className="results-display">
             <ManaCurve className="manacurve" data={this.state.manaCurve} options={this.state.manaCurve.barOptions}/>
             <Colors className="colorDist" data={this.state.colorDist}/>
