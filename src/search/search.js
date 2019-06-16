@@ -13,48 +13,34 @@ import '../styles/index.scss';
 // Use cards collection
 
 export default class Search extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      input: 'kruphix, god of horizons \nsol ring \nkodama\'s reach \ncoalition relic \nrise of the dark realms \nmana barbs \npath to exile',
-      manaCurve: {
-        barOptions: {},
-        labels: [],
-        datasets: [{
-          data: []
-        }]
-      },
-      colorDist: {
-        labels: [],
-        datasets: [{
-          data: []
-        }]
-      },
-      typeDist: {
-        labels: [],
-        datasets: [{
-          data: []
-        }]
-      }
-    };
+  state = {
+    input: 'kruphix, god of horizons \nsol ring \nkodama\'s reach \ncoalition relic \nrise of the dark realms \nmana barbs \npath to exile',
+    manaCurve: {
+      barOptions: {},
+      labels: [],
+      datasets: [{
+        data: []
+      }]
+    },
+    colorDist: {
+      labels: [],
+      datasets: [{
+        data: []
+      }]
+    },
+    typeDist: {
+      labels: [],
+      datasets: [{
+        data: []
+      }]
+    },
+    hasData: false,
+    progress: false
+  };
 
-    // binding this to the functions
-    this.onChange = this.onChange.bind(this);
-    this.displayResult = this.displayResult.bind(this);
-    this.clear = this.clear.bind(this);
-    this.getManaCurve = this.getManaCurve.bind(this);
-    this.getColorDist = this.getColorDist.bind(this);
-    this.getTypeDist = this.getTypeDist.bind(this);
+  handleChange = event => this.setState({input: event.target.value});
 
-    this.hasData = false;
-    this.progress = false;
-  }
-
-  onChange(event) {
-    this.setState({input: event.target.value});
-  }
-
-  displayResult() {
+  displayResult = () => {
     // Taking the inputs and putting them array with
     // {name: cardName1}, {name: cardName2}, ...
     // so that the API can handle the input
@@ -62,7 +48,7 @@ export default class Search extends React.Component {
       .map(m => ({name: m}));
     let identifiers = {identifiers: cards}
 
-    this.progress = true;
+    this.setState({progress: true});
 
     fetch('https://api.scryfall.com/cards/collection', {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -74,15 +60,17 @@ export default class Search extends React.Component {
         let color = this.getColorDist(response.data);
         let type = this.getTypeDist(response.data);
 
-        this.hasData = true;
-        this.progress = false;
-        this.setState({manaCurve: curve, colorDist: color, typeDist: type});
+        this.setState({
+          manaCurve: curve, colorDist: color, typeDist: type,
+          hasData: true,
+          progress: false
+        });
         // grab mana costs of everything and organize them into a chart
       });
   }
 
   // calculate mana curve
-  getManaCurve(res) {
+  getManaCurve = res => {
     // grabbing cmcs of cards and dumping into array
     // countBy counts all instances of each item in the Array
     // but there can be gaps, i.e. if there aren't cards with CMC 2
@@ -134,7 +122,7 @@ export default class Search extends React.Component {
   }
 
   // caculate color distribution
-  getColorDist(res) {
+  getColorDist = res => {
     var colors = ["W", "U", "B", "R", "G"];
     // add "C" back in if we want it
 
@@ -169,7 +157,7 @@ export default class Search extends React.Component {
   }
 
   // calculate type distribution (artifacts, enchantments, etc.)
-  getTypeDist(res) {
+  getTypeDist = res => {
     let types = ["Artifact", "Creature", "Enchantment", "Instant", "Land", "Planeswalker", "Sorcery"];
 
     // separating out the type line into types that exist in the types array
@@ -206,15 +194,13 @@ export default class Search extends React.Component {
     return data;
   }
 
-  clear() {
-    this.setState({input: ''});
-    this.hasData = false;
-  }
+  clear = () => this.setState({input: '', hasData: false});
 
   render() {
     return (
       <div className="search-container">
-        <textarea className="search-input" onChange={this.onChange} value={this.state.input}></textarea>
+        {/* CONVENTION IS onChange={this.handleChange} */}
+        <textarea className="search-input" onChange={this.handleChange} value={this.state.input}></textarea>
 
         <div className="button-container">
           <button className={`button primary ${this.state.input === '' ? 'disabled' : ''}`}
@@ -225,7 +211,7 @@ export default class Search extends React.Component {
         </div>
 
         {/* won't render properly unless you make sure there's data */}
-        {this.hasData && !this.progress &&
+        {this.state.hasData && !this.state.progress &&
           <div className="results-display">
             <ManaCurve className="manacurve" data={this.state.manaCurve} options={this.state.manaCurve.barOptions}/>
             <Colors className="colorDist" data={this.state.colorDist}/>
